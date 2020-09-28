@@ -1,0 +1,64 @@
+version: '3'
+
+networks:
+ frontend:
+  ipam:
+   config:
+    # Default Docker container network gate
+    - subnet: 172.20.0.0/24
+
+services:
+ apache:
+  # Build apache image
+  build: ./apache
+  # Name the image and tag the image
+  image: apache:latest
+  # Define run time container name
+  container_name: apache
+  # Set contianer sync folder
+  volumes:
+   - //c/Users/Arvin/Documents/Kitematic/apache/usr/local/apache2/conf/sites:/usr/local/apache2/conf/sites
+  # Define run time port match
+  ports:
+   - 8081:80
+  # Define run time network static ip
+  networks:
+   frontend:
+    ipv4_address: 172.20.0.5
+
+ tomcat1:
+  build: ./tomcat1
+  # Name the image and tag the image
+  image: tomcat1:latest
+  # Define run time container name
+  container_name: node1
+  # Set contianer sync folder
+  volumes:
+   - //c/Users/Arvin/Documents/Kitematic/node1/usr/local/tomcat/webapps:/usr/local/tomcat/webapps
+  # Define run time port match
+  ports:
+   - 8082:8009
+  # Define run time network static ip
+  networks:
+   frontend:
+    ipv4_address: 172.20.0.6
+  depends_on:
+   - apache
+
+ tomcat2:
+  build: ./tomcat2
+  # Name the image and tag the image
+  image: tomcat2:latest
+  # Define run time container name
+  container_name: node2
+  # Set contianer sync folder
+  volumes:
+   - //c/Users/Arvin/Documents/Kitematic/node2/usr/local/tomcat/webapps:/usr/local/tomcat/webapps
+  ports:
+   - 8083:8009
+  # Define run time network static ip
+  networks:
+   frontend:
+    ipv4_address: 172.20.0.7
+  depends_on:
+   - apache
